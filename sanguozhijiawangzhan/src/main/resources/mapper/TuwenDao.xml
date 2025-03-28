@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.TuwenDao">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        a.id as id
+        ,a.tuwen_name as tuwenName
+        ,a.tuwen_uuid_number as tuwenUuidNumber
+        ,a.tuwen_photo as tuwenPhoto
+        ,a.tuwen_types as tuwenTypes
+        ,a.tuwen_clicknum as tuwenClicknum
+        ,a.zan_number as zanNumber
+        ,a.cai_number as caiNumber
+        ,a.tuwen_content as tuwenContent
+        ,a.shangxia_types as shangxiaTypes
+        ,a.tuwen_delete as tuwenDelete
+        ,a.insert_time as insertTime
+        ,a.create_time as createTime
+    </sql>
+    <select id="selectListView" parameterType="map" resultType="com.entity.view.TuwenView" >
+        SELECT
+        <include refid="Base_Column_List" />
+        <!-- 级联表的字段 -->
+
+        FROM tuwen  a
+
+        <where>
+            <if test="params.ids != null">
+                and a.id in
+                <foreach item="item" index="index" collection="params.ids" open="(" separator="," close=")">
+                #{item}
+                </foreach>
+            </if>
+            <if test=" params.tuwenName != '' and params.tuwenName != null and params.tuwenName != 'null' ">
+                and a.tuwen_name like CONCAT('%',#{params.tuwenName},'%')
+            </if>
+            <if test=" params.tuwenUuidNumber != '' and params.tuwenUuidNumber != null and params.tuwenUuidNumber != 'null' ">
+                and a.tuwen_uuid_number like CONCAT('%',#{params.tuwenUuidNumber},'%')
+            </if>
+            <if test="params.tuwenTypes != null and params.tuwenTypes != ''">
+                and a.tuwen_types = #{params.tuwenTypes}
+            </if>
+            <if test="params.tuwenClicknumStart != null and params.tuwenClicknumStart != ''">
+                <![CDATA[  and a.tuwen_clicknum >= #{params.tuwenClicknumStart}   ]]>
+            </if>
+            <if test="params.tuwenClicknumEnd != null and params.tuwenClicknumEnd != ''">
+                <![CDATA[  and a.tuwen_clicknum <= #{params.tuwenClicknumEnd}   ]]>
+            </if>
+             <if test="params.tuwenClicknum != null and params.tuwenClicknum != ''">
+                and a.tuwen_clicknum = #{params.tuwenClicknum}
+             </if>
+            <if test="params.zanNumberStart != null and params.zanNumberStart != ''">
+                <![CDATA[  and a.zan_number >= #{params.zanNumberStart}   ]]>
+            </if>
+            <if test="params.zanNumberEnd != null and params.zanNumberEnd != ''">
+                <![CDATA[  and a.zan_number <= #{params.zanNumberEnd}   ]]>
+            </if>
+             <if test="params.zanNumber != null and params.zanNumber != ''">
+                and a.zan_number = #{params.zanNumber}
+             </if>
+            <if test="params.caiNumberStart != null and params.caiNumberStart != ''">
+                <![CDATA[  and a.cai_number >= #{params.caiNumberStart}   ]]>
+            </if>
+            <if test="params.caiNumberEnd != null and params.caiNumberEnd != ''">
+                <![CDATA[  and a.cai_number <= #{params.caiNumberEnd}   ]]>
+            </if>
+             <if test="params.caiNumber != null and params.caiNumber != ''">
+                and a.cai_number = #{params.caiNumber}
+             </if>
+            <if test=" params.tuwenContent != '' and params.tuwenContent != null and params.tuwenContent != 'null' ">
+                and a.tuwen_content like CONCAT('%',#{params.tuwenContent},'%')
+            </if>
+            <if test="params.shangxiaTypes != null and params.shangxiaTypes != ''">
+                and a.shangxia_types = #{params.shangxiaTypes}
+            </if>
+            <if test="params.tuwenDeleteStart != null and params.tuwenDeleteStart != ''">
+                <![CDATA[  and a.tuwen_delete >= #{params.tuwenDeleteStart}   ]]>
+            </if>
+            <if test="params.tuwenDeleteEnd != null and params.tuwenDeleteEnd != ''">
+                <![CDATA[  and a.tuwen_delete <= #{params.tuwenDeleteEnd}   ]]>
+            </if>
+             <if test="params.tuwenDelete != null and params.tuwenDelete != ''">
+                and a.tuwen_delete = #{params.tuwenDelete}
+             </if>
+            <if test=" params.insertTimeStart != '' and params.insertTimeStart != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(a.insert_time) >= UNIX_TIMESTAMP(#{params.insertTimeStart}) ]]>
+            </if>
+            <if test=" params.insertTimeEnd != '' and params.insertTimeEnd != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(a.insert_time) <= UNIX_TIMESTAMP(#{params.insertTimeEnd}) ]]>
+            </if>
+
+        </where>
+        order by a.${params.sort} ${params.order}
+    </select>
+
+</mapper>
